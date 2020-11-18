@@ -2,7 +2,11 @@ package edu.uoc.pac3.twitch.streams
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import edu.uoc.pac3.R
+import edu.uoc.pac3.data.TwitchApiService
+import edu.uoc.pac3.data.network.Network
+import kotlinx.coroutines.launch
 
 class StreamsActivity : AppCompatActivity() {
 
@@ -14,6 +18,15 @@ class StreamsActivity : AppCompatActivity() {
         // Init RecyclerView
         initRecyclerView()
         // TODO: Get Streams
+        // Create Twitch Service
+        val twitchService = TwitchApiService(Network.createHttpClient(applicationContext))
+
+        lifecycleScope.launch {
+            // Get Tokens from Twitch
+            val response = twitchService.getStreams()
+            val i = 0
+            val a = 1
+        }
     }
 
     private fun initRecyclerView() {

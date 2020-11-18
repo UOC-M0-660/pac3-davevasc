@@ -15,7 +15,7 @@ class LaunchActivity : AppCompatActivity() {
     }
 
     private fun checkUserSession() {
-        if (SessionManager(this).isUserAvailable()) {
+        if (SessionManager().isUserAvailable()) {
             // User is available, open Streams Activity
             startActivity(Intent(this, StreamsActivity::class.java))
         } else {
