@@ -15,4 +15,6 @@
     <!-- Custom -->
     <dimen name="stream_item_image_height">144dp</dimen>
     <dimen name="profile_image_size">96dp</dimen>
+
+    <dimen name="card_elevation">4dp</dimen>
 </resources>

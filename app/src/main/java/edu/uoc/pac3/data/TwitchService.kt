@@ -7,9 +7,11 @@ import edu.uoc.pac3.data.oauth.OAuthConstants.clientSecret
 import edu.uoc.pac3.data.oauth.OAuthConstants.redirectUri
 import edu.uoc.pac3.data.oauth.OAuthTokensResponse
 import edu.uoc.pac3.data.oauth.UnauthorizedException
+import edu.uoc.pac3.data.streams.Stream
 import edu.uoc.pac3.data.streams.StreamsResponse
 import edu.uoc.pac3.data.user.User
 import io.ktor.client.*
+import io.ktor.client.features.*
 import io.ktor.client.request.*
 
 /**
@@ -23,17 +25,22 @@ class TwitchApiService(private val httpClient: HttpClient) {
     suspend fun getTokens(authorizationCode: String): OAuthTokensResponse? {
         // Get Tokens from Twitch
         try {
-            return httpClient.post<OAuthTokensResponse>("https://id.twitch.tv/oauth2/token") {
+            val i =  httpClient.post<OAuthTokensResponse>("https://id.twitch.tv/oauth2/token") {
                 parameter("client_id", clientID)
                 parameter("client_secret", clientSecret)
                 parameter("code", authorizationCode)
                 parameter("grant_type", "authorization_code")
                 parameter("redirect_uri", redirectUri)
             }
-        } catch (t: Throwable) {
-            when (t) {
-                is UnauthorizedException -> Log.d(TAG, "UnauthorizedException")
-                else -> Log.d(TAG, "UnknownException")
+            val a = 1
+            return i
+        } catch (e: ClientRequestException) {
+            when (e.response?.status?.value) {
+                401 -> {
+                    Log.d(TAG, "getTokens -> UnauthorizedException")
+                    throw UnauthorizedException
+                }
+                else -> Log.d(TAG, "getTokens -> UnknownException")
             }
         }
         return null
@@ -42,19 +49,18 @@ class TwitchApiService(private val httpClient: HttpClient) {
     /** Gets Streams on Twitch */
     @Throws(UnauthorizedException::class)
     suspend fun getStreams(cursor: String? = null): StreamsResponse? {
-        // TODO("Get Streams from Twitch")
-        //TODO("Support Pagination")
-
+        // ("Get Streams from Twitch")
+        // ("Support Pagination")
         try {
             return getStreamsResponse(cursor)
-        } catch (t: Throwable) {
-            when (t) {
-                is UnauthorizedException -> {
-                    Log.d(TAG, "UnauthorizedException")
+        } catch (e: ClientRequestException) {
+            when (e.response?.status?.value) {
+                401 -> {
+                    Log.d(TAG, "getStreams -> UnauthorizedException. So, trying renew tokens...")
                     refreshAccessToken()
-                    getStreamsResponse(cursor).let {return it}
+                    return getStreamsResponse(cursor)
                 }
-                else -> Log.d(TAG, "UnknownException")
+                else -> Log.d(TAG, "getStreams -> UnknownException")
             }
         }
         return null
@@ -72,16 +78,13 @@ class TwitchApiService(private val httpClient: HttpClient) {
         TODO("Update User Description on Twitch")
     }
 
-
     private suspend fun getStreamsResponse (cursor: String? = null): StreamsResponse? {
-        val i = httpClient.post<StreamsResponse>("https://api.twitch.tv/helix/streams") {
-            header("client_id", clientID)
-            header("authorization", "Bearer ${SessionManager().getAccessToken()}")
-            //parameter("after", cursor)
+        return httpClient.get<StreamsResponse>("https://api.twitch.tv/helix/streams") {
+            header("Authorization", "Bearer ${SessionManager().getAccessToken()}")
+            header("Client-Id", clientID)
+            parameter("after", cursor)
         }
-        return i
     }
-
 
     private suspend fun refreshAccessToken() {
         try {
@@ -93,13 +96,16 @@ class TwitchApiService(private val httpClient: HttpClient) {
             }
             response.accessToken.let { accToken -> SessionManager().saveAccessToken(accToken) }
             response.refreshToken?.let { refToken -> SessionManager().saveRefreshToken(refToken) }
-        } catch (t: Throwable) {
-            when (t) {
-                is UnauthorizedException -> Log.d(TAG, "UnauthorizedException")
-                else -> Log.d(TAG, "UnknownException")
+            Log.d(TAG, "refreshAccessToken -> accessToken and refreshToken successful renewed")
+        } catch (e: ClientRequestException) {
+            when (e.response?.status?.value) {
+                401 -> {
+                    Log.d(TAG, "refreshAccessToken -> UnauthorizedException")
+                    throw UnauthorizedException
+                }
+                else -> Log.d(TAG, "refreshAccessToken -> UnknownException")
             }
         }
-
     }
 
 

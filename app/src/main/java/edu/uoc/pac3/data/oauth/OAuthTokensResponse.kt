@@ -13,5 +13,5 @@ data class OAuthTokensResponse(
     @SerialName("refresh_token") val refreshToken: String? = null,
     @SerialName("expires_in") val expiresInSeconds: Int? = null,
     @SerialName("token_type") val tokenType: String? = null,
-    @SerialName("scope") val scopes: List<String>? = null,
+    @SerialName("scope") val scopes: List<String>? = null
 )

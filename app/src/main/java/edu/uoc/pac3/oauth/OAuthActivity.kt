@@ -75,10 +75,11 @@ class OAuthActivity : AppCompatActivity() {
                                 onAuthorizationCodeRetrieved(code)
                             } ?: run {
                                 // User cancelled the login flow
-                                // TODO: Handle error
+                                // Handle error
                                 Log.d(TAG, "User cancelled the login flow")
-                                //UnauthorizedException
-                                //return false ??
+                                Toast.makeText(applicationContext, "Couldn't log in with Twitch please try again later", Toast.LENGTH_SHORT).show()
+                                startActivity(Intent(applicationContext, LoginActivity::class.java))
+                                //finish()
                             }
                         }
                     }
@@ -115,6 +116,7 @@ class OAuthActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Error when login, please try again", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(applicationContext, LoginActivity::class.java))
             }
+            //finish()
         }
     }
 }
