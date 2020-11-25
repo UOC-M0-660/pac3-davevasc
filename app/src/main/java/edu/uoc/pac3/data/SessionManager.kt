@@ -1,7 +1,16 @@
 package edu.uoc.pac3.data
 
 import android.content.Context
+import android.content.Intent
+import android.webkit.CookieManager
+import android.webkit.WebStorage
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import edu.uoc.pac3.PEC3App
+import edu.uoc.pac3.data.oauth.OAuthConstants
+import edu.uoc.pac3.oauth.LoginActivity
+import java.util.*
+import kotlin.coroutines.coroutineContext
 
 /**
  * Created by alex on 06/09/2020.
@@ -33,12 +42,17 @@ class SessionManager {
 
     fun saveRefreshToken(refreshToken: String) {
         PEC3App.prefs.refresh = refreshToken
-        PEC3App.prefs.user = true
     }
 
     fun clearRefreshToken() {
         PEC3App.prefs.refresh = null
-        PEC3App.prefs.user = false
+    }
+
+    fun logoutSession() {
+        CookieManager.getInstance().removeAllCookies(null)
+        this.clearAccessToken()
+        PEC3App.context.startActivity(Intent(PEC3App.context, LoginActivity::class.java))
+        Toast.makeText(PEC3App.context, "Successfully logged out", Toast.LENGTH_SHORT).show()
     }
 
 }

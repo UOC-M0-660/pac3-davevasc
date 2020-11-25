@@ -24,5 +24,4 @@ class Prefs (context: Context) {
     var refresh: String?
         get() = prefs.getString(argREF, null)
         set(value) = prefs.edit().putString(argREF, value).apply()
-
 }

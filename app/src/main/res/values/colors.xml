@@ -13,8 +13,11 @@
     <color name="colorOnSurface">@color/black</color>
     <color name="scrimBackground">@color/white</color>
     <color name="grey">#DADADA</color>
+    <color name="grey_dark">#6C6C6C</color>
 
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+
+    <color name="progress_bar">#EC00E0</color>
 </resources>

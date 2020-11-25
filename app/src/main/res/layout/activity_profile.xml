@@ -1,88 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor">
+    android:background="@color/grey" >
 
-    <LinearLayout
+
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvCardInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="@dimen/margin_medium"
-        tools:context=".twitch.profile.ProfileActivity">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="@dimen/profile_image_size"
-            android:layout_height="@dimen/profile_image_size"
-            tools:src="@mipmap/ic_launcher" />
-
-        <LinearLayout
-            android:id="@+id/viewsContainer"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        android:layout_marginStart="@dimen/margin_xsmall"
+        android:layout_marginEnd="@dimen/margin_xsmall"
+        card_view:cardCornerRadius="@dimen/margin_xsmall"
+        card_view:cardBackgroundColor="@color/cardview_light_background"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        card_view:cardElevation="@dimen/card_elevation"
+        android:focusable="true">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/margin_medium"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:tint="@color/colorOnBackground"
-                android:layout_marginEnd="@dimen/margin_small"
-                android:src="@drawable/ic_eye"/>
+            android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/viewsText"
+                android:id="@+id/tvInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_xxxsmall"
+                android:text=" INFORMATION"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:background="@color/grey_dark"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/ivImage"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_below="@+id/tvInfo"
+                android:layout_alignParentStart="true"
+                android:contentDescription="TODO"
+                android:padding="@dimen/margin_xsmall"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorOnBackground"
-                tools:text="100 Views"/>
-        </LinearLayout>
+                android:padding="@dimen/margin_xsmall"
+                android:gravity="center_horizontal|center_vertical"
+                android:layout_margin="@dimen/margin_xsmall"
+                android:textAlignment="center"
+                android:layout_below="@+id/tvInfo"
+                android:layout_toEndOf="@+id/ivImage"
+                android:background="@drawable/ic_rounded_corner_dark_blue"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text=" Name"
+                card_view:drawableStartCompat="@drawable/ic_user" />
 
-        <TextView
-            android:id="@+id/userNameTextView"
-            style="@style/TextAppearance.MaterialComponents.Headline4"
+            <TextView
+                android:id="@+id/tvCount"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:padding="@dimen/margin_xsmall"
+                android:gravity="center_horizontal|center_vertical"
+                android:layout_margin="@dimen/margin_xsmall"
+                android:layout_below="@+id/tvName"
+                android:layout_toEndOf="@+id/ivImage"
+                android:background="@drawable/ic_rounded_corner_red"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text=" 100000"
+                card_view:drawableStartCompat="@drawable/ic_eye" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_xxsmall"
+                android:layout_below="@id/ivImage"
+                android:textColor="@color/grey_dark"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="example@email.com"
+                card_view:drawableStartCompat="@android:drawable/sym_action_email" />
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_xxsmall"
+                android:layout_marginBottom="@dimen/margin_xxsmall"
+                android:textColor="@color/grey_dark"
+                android:layout_below="@id/tvEmail"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="01/01/2021"
+                card_view:drawableStartCompat="@android:drawable/ic_menu_my_calendar"/>
+
+
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+
+            android:id="@+id/cvCardDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
-            android:textColor="@color/colorOnBackground"
-            tools:text="Ibai" />
-
+            android:layout_below="@id/cvCardInfo"
+            android:layout_marginTop="@dimen/margin_xsmall"
+            android:layout_marginStart="@dimen/margin_xsmall"
+            android:layout_marginEnd="@dimen/margin_xsmall"
+            card_view:cardCornerRadius="@dimen/margin_xsmall"
+            card_view:cardBackgroundColor="@color/cardview_light_background"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            card_view:cardElevation="@dimen/card_elevation"
+            android:focusable="true">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <TextView
+                    android:id="@+id/tvDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_xxxsmall"
+                    android:text=" DESCRIPTION"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:background="@color/grey_dark"
+                    android:textSize="12sp" />
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
-            android:hint="@string/hint_user_description">
-
+            android:layout_below="@id/tvDesc"
+            card_view:boxStrokeColor="@color/white" >
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/userDescriptionEditText"
+                android:id="@+id/tfDescription"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey_dark"
+                android:textSize="16sp"
+                android:text="@string/lorem_ipsum"
+                android:background="@color/white"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/updateDescriptionButton"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
-            android:text="@string/button_save_description" />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/logoutButton"
+            android:id="@+id/mbUpdate"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            card_view:cornerRadius="@dimen/margin_xsmall"
+            android:layout_marginTop="@dimen/margin_xsmall"
+            android:layout_marginStart="@dimen/margin_xsmall"
+            android:layout_marginEnd="@dimen/margin_xsmall"
+            android:text="@string/button_save_description"
+            android:layout_below="@id/cvCardDesc"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mbLogout"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
-            android:text="@string/button_logout" />
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:layout_marginTop="@dimen/margin_xsmall"
+            android:layout_marginStart="@dimen/margin_xsmall"
+            android:layout_marginEnd="@dimen/margin_xsmall"
+            card_view:cornerRadius="@dimen/margin_xsmall"
+            android:backgroundTint="@color/colorError"
+            android:text="@string/button_logout"
+            android:layout_below="@id/mbUpdate"/>
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/pbLoading"
+            style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_medium"
+            android:translationZ="32dp"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@color/progress_bar"
             android:visibility="gone" />
-    </LinearLayout>
+
+    </RelativeLayout>
+
+
+
 </androidx.core.widget.NestedScrollView>

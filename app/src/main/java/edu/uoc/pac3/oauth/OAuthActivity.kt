@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.WebResourceRequest
+import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
@@ -17,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import edu.uoc.pac3.R
 import edu.uoc.pac3.data.SessionManager
 import edu.uoc.pac3.data.TwitchApiService
+import edu.uoc.pac3.data.network.Endpoints
 import edu.uoc.pac3.data.network.Network.createHttpClient
 import edu.uoc.pac3.data.oauth.OAuthConstants.authorizationUrl
 import edu.uoc.pac3.data.oauth.OAuthConstants.clientID
@@ -34,7 +36,9 @@ import kotlinx.coroutines.launch
 
 class OAuthActivity : AppCompatActivity() {
 
-    private val TAG = "OAuthActivity"
+    companion object {
+        const val TAG = "OAuthActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +47,7 @@ class OAuthActivity : AppCompatActivity() {
     }
 
     fun buildOAuthUri(): Uri {
-        // TODO: Create URI
+        // Create URI
         return Uri.parse(authorizationUrl)
                 .buildUpon()
                 .appendQueryParameter("client_id", clientID)
@@ -58,8 +62,7 @@ class OAuthActivity : AppCompatActivity() {
     private fun launchOAuthAuthorization() {
         //  Create URI
         val uri = buildOAuthUri()
-
-        // TODO: Set webView Redirect Listener
+        // Set webView Redirect Listener
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 request?.let {
@@ -71,20 +74,24 @@ class OAuthActivity : AppCompatActivity() {
                             // This is our request, obtain the code!
                             request.url.getQueryParameter("code")?.let { code ->
                                 // Got it!
-                                Log.d(TAG, "Here is the authorization code! $code")
+                                Log.d(TAG, "shouldOverrideUrlLoading -> Here is the authorization code! $code")
                                 onAuthorizationCodeRetrieved(code)
                             } ?: run {
                                 // User cancelled the login flow
-                                // Handle error
-                                Log.d(TAG, "User cancelled the login flow")
+                                Log.d(TAG, "shouldOverrideUrlLoading -> User cancelled the login flow")
                                 Toast.makeText(applicationContext, "Couldn't log in with Twitch please try again later", Toast.LENGTH_SHORT).show()
-                                startActivity(Intent(applicationContext, LoginActivity::class.java))
-                                //finish()
+                                // Remove all Cookies, clear Access Token and open LoginActivity for try again
+                                SessionManager().logoutSession()
                             }
                         }
                     }
                 }
-                return super.shouldOverrideUrlLoading(view, request)
+                // Load url on webView only when is asking user and password, to avoid ugly localhost error page
+                return if (request?.url.toString().startsWith(redirectUri)) {
+                    true
+                } else {
+                    super.shouldOverrideUrlLoading(view, request)
+                }
             }
         }
         // Load OAuth Uri
@@ -95,28 +102,29 @@ class OAuthActivity : AppCompatActivity() {
     /** Call this method after obtaining the authorization code
      on the WebView to obtain the tokens */
     private fun onAuthorizationCodeRetrieved(authorizationCode: String) {
-        // Show Loading Indicator
-        progressBar.visibility = View.VISIBLE
         // Create Twitch Service
         val twitchService = TwitchApiService(createHttpClient(applicationContext))
         // Start Coroutine
         lifecycleScope.launch {
+            // Show Loading Indicator
+            progressBar.visibility = View.VISIBLE
             // Get Tokens from Twitch
             val response = twitchService.getTokens(authorizationCode)
-            // Save access token and refresh token using the SessionManager class
+            // If exists, save access token and refresh token using the SessionManager class
             response?.accessToken?.let { accToken -> SessionManager().saveAccessToken(accToken) }
             response?.refreshToken?.let { refToken -> SessionManager().saveRefreshToken(refToken) }
-            // If we are correctly identified, load directly Streams Activity, else, load login again
+            // If we are correctly identified, load directly Streams Activity, else, load Login Activity again
             if (SessionManager().isUserAvailable()) {
                 // Launch Streams Activity
-                Toast.makeText(applicationContext, "Login correctly identified!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Login correctly identified!!", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(applicationContext, StreamsActivity::class.java))
             } else {
-                // Return to Login Activity
+                // Return to Login Activity again
                 Toast.makeText(applicationContext, "Error when login, please try again", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(applicationContext, LoginActivity::class.java))
             }
-            //finish()
+            // Hide Loading Indicator
+            progressBar.visibility = View.GONE
         }
     }
 }

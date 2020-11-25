@@ -1,7 +1,11 @@
 package edu.uoc.pac3.twitch.streams
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.webkit.WebStorage
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +16,10 @@ import edu.uoc.pac3.data.network.Network
 import edu.uoc.pac3.data.streams.Stream
 import edu.uoc.pac3.databinding.ActivityStreamsBinding
 import kotlinx.coroutines.launch
+import edu.uoc.pac3.R
+import edu.uoc.pac3.data.SessionManager
+import edu.uoc.pac3.oauth.LoginActivity
+import edu.uoc.pac3.twitch.profile.ProfileActivity
 
 class StreamsActivity : AppCompatActivity() {
 
@@ -43,10 +51,31 @@ class StreamsActivity : AppCompatActivity() {
         loadStreamsFromTwitch()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.tmProfile -> {
+                startActivity(Intent(applicationContext, ProfileActivity::class.java))
+                return true
+            }
+            R.id.tmLogout -> {
+                binding.pbLoading.visibility = View.VISIBLE
+                SessionManager().logoutSession()
+                binding.pbLoading.visibility = View.GONE
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun initRecyclerView() {
         // Set Layout Manager
         binding.tvShow.visibility = View.GONE
-        layoutManager = LinearLayoutManager(this@StreamsActivity)
+        layoutManager = LinearLayoutManager(applicationContext)
         // Binding recyclerview Layout Manager
         binding.rvStreams.layoutManager = layoutManager
         // Init Adapter
@@ -91,11 +120,13 @@ class StreamsActivity : AppCompatActivity() {
     private fun loadStreamsFromTwitch() {
         // Start Coroutine
         lifecycleScope.launch {
+            binding.pbLoading.visibility = View.VISIBLE
             // Get Tokens from Twitch
             val response = twitchService.getStreams(cursor)
             // Show streams in the recyclerview
             response?.pagination?.cursor?.let { cursor = it }
             response?.data?.let { adapter.setStreams(it.toMutableList()) }
+            binding.pbLoading.visibility = View.GONE
         }
     }
 
