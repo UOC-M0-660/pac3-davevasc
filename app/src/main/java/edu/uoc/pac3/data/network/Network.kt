@@ -47,7 +47,7 @@ object Network {
             // Interceptor
             engine {
                 // Add Error Interceptor to network request
-                //addInterceptor(ErrorInterceptor())
+                addInterceptor(ErrorInterceptor())
             }
             // Apply to All Requests
             defaultRequest {
