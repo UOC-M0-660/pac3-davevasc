@@ -16,64 +16,68 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/margin_xxsmall">
+        <!-- Stream preview image -->
         <ImageView
             android:id="@+id/ivImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitCenter"
             android:src="@mipmap/ic_launcher"
-            android:contentDescription="TODO" />
-
+            android:contentDescription="@string/stream_image" />
+        <!-- Position count -->
         <TextView
             android:id="@+id/tvTrend"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_alignTop="@+id/ivImage"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/margin_xsmall"
+            android:layout_marginStart="@dimen/margin_xsmall"
             android:background="@drawable/ic_rounded_corner_blue"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:text=" 1"
+            android:paddingStart="@dimen/margin_small"
+            android:paddingEnd="@dimen/margin_small"
+            android:text="@string/stream_position"
             android:textColor="@color/grey"
-            android:textSize="30sp"
+            android:textSize="@dimen/label_text_size"
             card_view:drawableStartCompat="@android:drawable/btn_star_big_off" />
+        <!-- Views counter -->
+        <TextView
+            android:id="@+id/tvCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/ivImage"
+            android:layout_alignBottom="@+id/ivImage"
+            android:layout_marginEnd="@dimen/margin_xsmall"
+            android:layout_marginBottom="@dimen/margin_xsmall"
+            android:background="@drawable/ic_rounded_corner_red"
+            android:paddingStart="@dimen/margin_small"
+            android:paddingEnd="@dimen/margin_small"
+            android:text="@string/stream_count_views_label"
+            android:textColor="@color/grey"
+            android:textSize="@dimen/label_text_size"
+            card_view:drawableStartCompat="@drawable/ic_eye" />
+        <!-- Stream title -->
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="4dp"
+            android:padding="@dimen/margin_xxsmall"
             android:textColor="@color/colorPrimary"
             android:layout_below="@id/ivImage"
-            android:textSize="20sp"
+            android:textSize="@dimen/stream_text_size"
             android:textStyle="bold"
-            android:text="Title example"/>
+            android:text="@string/stream_title_example"/>
+        <!-- Stream author or user-->
         <TextView
             android:id="@+id/tvUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="4dp"
+            android:padding="@dimen/margin_xxsmall"
             android:textColor="@color/black"
             android:layout_below="@id/tvTitle"
-            android:textSize="20sp"
-            android:text="User example"
+            android:textSize="@dimen/stream_text_size"
+            android:text="@string/stream_user_example"
             card_view:drawableStartCompat="@android:drawable/radiobutton_on_background"/>
 
-        <TextView
-            android:id="@+id/tvCount"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignEnd="@+id/ivImage"
-            android:layout_alignBottom="@+id/ivImage"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/ic_rounded_corner_red"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:text=" 100000"
-            android:textColor="@color/grey"
-            android:textSize="30sp"
-            card_view:drawableStartCompat="@drawable/ic_eye" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

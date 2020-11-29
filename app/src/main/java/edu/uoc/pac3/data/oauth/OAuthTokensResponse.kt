@@ -5,8 +5,9 @@ import kotlinx.serialization.Serializable
 
 /**
  * Created by alex on 07/09/2020.
+ * Done by david on 27/11/2020.
+ * Define OAuth Tokens Response data class serializable structure
  */
-
 @Serializable
 data class OAuthTokensResponse(
     @SerialName("access_token") val accessToken: String,

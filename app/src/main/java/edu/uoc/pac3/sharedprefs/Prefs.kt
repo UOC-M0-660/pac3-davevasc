@@ -3,6 +3,9 @@ package edu.uoc.pac3.sharedprefs
 import android.content.Context
 import android.content.SharedPreferences
 
+/**
+ * Done by david on 27/11/2020.
+ * Class for manage Shared Preferences */
 class Prefs (context: Context) {
     private val prefersNAME = "edu.uoc.pac3"
     private val prefs: SharedPreferences = context.getSharedPreferences(prefersNAME, 0)

@@ -2,18 +2,17 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/grey"
     tools:context=".twitch.streams.StreamsActivity">
-
+    <!-- Swiper down refresh stream list -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <!-- Recycler view of streams list -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvStreams"
             android:name="edu.uoc.pac3"
@@ -23,26 +22,28 @@
             android:clipToPadding="false"
             tools:listitem="@layout/stream_item" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+    <!-- Label for show 20 more streams -->
     <TextView
         android:id="@+id/tvShow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:padding="@dimen/margin_xsmall"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="@dimen/show_margin_bottom"
         android:background="@drawable/ic_rounded_corner_primary"
-        android:text=" Show 20 more "
+        android:text="@string/streams_show_20_more_label"
+        android:textStyle="bold"
         android:textColor="@color/grey"
-        android:textSize="18sp" />
-
+        android:textSize="@dimen/profile_label_text_size"
+        android:visibility="gone"/>
+    <!-- Progress bar -->
     <ProgressBar
         android:id="@+id/pbLoading"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:translationZ="32dp"
+        android:translationZ="@dimen/translationZ"
         android:layout_centerInParent="true"
         android:indeterminateTint="@color/progress_bar"
         android:visibility="gone" />

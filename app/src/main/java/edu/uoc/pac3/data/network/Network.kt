@@ -1,7 +1,7 @@
 package edu.uoc.pac3.data.network
 
-import android.content.Context
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.*
@@ -10,19 +10,21 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.coroutines.launch
 
 
 /**
  * Created by alex on 07/09/2020.
+ * Done by david on 27/11/2020.
+ * Network definition creating using Ktor Http Client.
  */
 object Network {
 
-    private const val TAG = "Network"
+    private const val TAG = "Ktor"
 
-    fun createHttpClient(context: Context): HttpClient {
+    /** Creating and setup Ktor Http Client */
+    fun createHttpClient(): HttpClient {
         return HttpClient(OkHttp) {
-            // TODO: Setup HttpClient
-
             // Json
             install(JsonFeature) {
                 serializer = KotlinxSerializer(json)
@@ -31,7 +33,7 @@ object Network {
             install(Logging) {
                 logger = object : Logger {
                     override fun log(message: String) {
-                        Log.v("Ktor", message)
+                        Log.v(TAG, message)
                     }
                 }
                 level = LogLevel.ALL
@@ -42,9 +44,13 @@ object Network {
                 connectTimeoutMillis = 15000L
                 socketTimeoutMillis = 15000L
             }
+            // Interceptor
+            engine {
+                // Add Error Interceptor to network request
+                //addInterceptor(ErrorInterceptor())
+            }
             // Apply to All Requests
             defaultRequest {
-                //parameter("api_key", "some_api_key")
                 // Content Type
                 if (this.method != HttpMethod.Get) contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
@@ -52,6 +58,7 @@ object Network {
         }
     }
 
+    /** Json kotlin serialization attributes */
     private val json = kotlinx.serialization.json.Json {
         ignoreUnknownKeys = true
         isLenient = true

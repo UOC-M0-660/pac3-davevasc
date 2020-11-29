@@ -1,53 +1,54 @@
 package edu.uoc.pac3.oauth
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.WebResourceRequest
-import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
-import edu.uoc.pac3.R
 import edu.uoc.pac3.data.SessionManager
 import edu.uoc.pac3.data.TwitchApiService
-import edu.uoc.pac3.data.network.Endpoints
 import edu.uoc.pac3.data.network.Network.createHttpClient
 import edu.uoc.pac3.data.oauth.OAuthConstants.authorizationUrl
 import edu.uoc.pac3.data.oauth.OAuthConstants.clientID
-import edu.uoc.pac3.data.oauth.OAuthConstants.clientSecret
 import edu.uoc.pac3.data.oauth.OAuthConstants.redirectUri
 import edu.uoc.pac3.data.oauth.OAuthConstants.scopes
 import edu.uoc.pac3.data.oauth.OAuthConstants.uniqueState
-import edu.uoc.pac3.data.oauth.OAuthTokensResponse
-import edu.uoc.pac3.data.oauth.UnauthorizedException
+import edu.uoc.pac3.databinding.ActivityOauthBinding
 import edu.uoc.pac3.twitch.streams.StreamsActivity
-import io.ktor.client.request.*
-import io.ktor.http.HttpHeaders.Authorization
-import kotlinx.android.synthetic.main.activity_oauth.*
 import kotlinx.coroutines.launch
 
+/**
+ * Created by alex on 24/10/2020.
+ * Done by david on 27/11/2020.
+ * Class for manage login on Twitch by his API */
 class OAuthActivity : AppCompatActivity() {
 
+    /** Object with constants for use in this activity */
     companion object {
         const val TAG = "OAuthActivity"
     }
 
+    // Declare binding variable for this activity
+    private lateinit var binding: ActivityOauthBinding
+
+    /** onCreate activity function */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_oauth)
+        // Set binding variable for current activity
+        binding = ActivityOauthBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        // Launch OAuth authorization function
         launchOAuthAuthorization()
     }
-
+    /** Create URI from OAuthConstants data class constants and values */
     fun buildOAuthUri(): Uri {
-        // Create URI
         return Uri.parse(authorizationUrl)
                 .buildUpon()
                 .appendQueryParameter("client_id", clientID)
@@ -57,13 +58,13 @@ class OAuthActivity : AppCompatActivity() {
                 .appendQueryParameter("state", uniqueState)
                 .build()
     }
-
+    /** Load authorization url into webView and set webView redirect listener */
     @SuppressLint("SetJavaScriptEnabled")
     private fun launchOAuthAuthorization() {
-        //  Create URI
+        //  Create URI for load into webView
         val uri = buildOAuthUri()
         // Set webView Redirect Listener
-        webView.webViewClient = object : WebViewClient() {
+        binding.webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 request?.let {
                     // Check if this url is our OAuth redirect, otherwise ignore it
@@ -75,13 +76,15 @@ class OAuthActivity : AppCompatActivity() {
                             request.url.getQueryParameter("code")?.let { code ->
                                 // Got it!
                                 Log.d(TAG, "shouldOverrideUrlLoading -> Here is the authorization code! $code")
+                                // Send authorization code to Twitch by his API, for obtain Tokens
                                 onAuthorizationCodeRetrieved(code)
                             } ?: run {
                                 // User cancelled the login flow
                                 Log.d(TAG, "shouldOverrideUrlLoading -> User cancelled the login flow")
                                 Toast.makeText(applicationContext, "Couldn't log in with Twitch please try again later", Toast.LENGTH_SHORT).show()
-                                // Remove all Cookies, clear Access Token and open LoginActivity for try again
+                                // Remove all Cookies, clear Access Token and open LoginActivity for try again, and finish current Activity
                                 SessionManager().logoutSession()
+                                finish()
                             }
                         }
                     }
@@ -95,36 +98,40 @@ class OAuthActivity : AppCompatActivity() {
             }
         }
         // Load OAuth Uri
-        webView.settings.javaScriptEnabled = true
-        webView.loadUrl(uri.toString())
+        binding.webView.settings.javaScriptEnabled = true
+        binding.webView.loadUrl(uri.toString())
     }
 
     /** Call this method after obtaining the authorization code
-     on the WebView to obtain the tokens */
+     * on the WebView to obtain the tokens */
     private fun onAuthorizationCodeRetrieved(authorizationCode: String) {
         // Create Twitch Service
-        val twitchService = TwitchApiService(createHttpClient(applicationContext))
+        val twitchService = TwitchApiService(createHttpClient())
         // Start Coroutine
         lifecycleScope.launch {
             // Show Loading Indicator
-            progressBar.visibility = View.VISIBLE
+            binding.pbLoading.visibility = View.VISIBLE
             // Get Tokens from Twitch
             val response = twitchService.getTokens(authorizationCode)
-            // If exists, save access token and refresh token using the SessionManager class
+            // If exists, save Access Token and Refresh Token using the SessionManager class
             response?.accessToken?.let { accToken -> SessionManager().saveAccessToken(accToken) }
             response?.refreshToken?.let { refToken -> SessionManager().saveRefreshToken(refToken) }
-            // If we are correctly identified, load directly Streams Activity, else, load Login Activity again
+            // If we are correctly identified, load directly Streams Activity, else, clean webView and load Login Activity again
             if (SessionManager().isUserAvailable()) {
                 // Launch Streams Activity
+                Log.d(TAG, "onAuthorizationCodeRetrieved -> Login correctly identified!!")
                 Toast.makeText(applicationContext, "Login correctly identified!!", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(applicationContext, StreamsActivity::class.java))
             } else {
                 // Return to Login Activity again
+                Log.d(TAG, "onAuthorizationCodeRetrieved -> Error when login, please try again")
                 Toast.makeText(applicationContext, "Error when login, please try again", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(applicationContext, LoginActivity::class.java))
+                // Remove all Cookies, clear Access Token and open LoginActivity for try again, and finish current Activity
+                SessionManager().logoutSession()
             }
+            finish()
             // Hide Loading Indicator
-            progressBar.visibility = View.GONE
+            binding.pbLoading.visibility = View.GONE
         }
     }
 }

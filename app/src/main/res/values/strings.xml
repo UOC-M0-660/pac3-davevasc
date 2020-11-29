@@ -18,11 +18,26 @@
     </plurals>
     <string name="views_text">%d views</string>
 
+    <!-- Profile -->
     <string name="error_oauth">Login with Twitch Failed</string>
     <string name="error_streams">Error getting Streams</string>
     <string name="error_profile">Error getting Profile</string>
     <string name="error_profile_update">Error updating profile</string>
     <string name="toolbar_menu_profile">Profile</string>
     <string name="toolbar_menu_logout">Logout</string>
+    <string name="avatar_image">Avatar Image</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</string>
+    <string name="profile_information_label">INFORMATION</string>
+    <string name="profile_name">Name</string>
+    <string name="profile_views">100000</string>
+    <string name="profile_example_email">example@email.com</string>
+    <string name="profile_example_date">01/01/2021</string>
+    <string name="profile_description_label">DESCRIPTION</string>
+    <!-- Streams -->
+    <string name="streams_show_20_more_label">Show 20 more</string>
+    <string name="stream_image">Stream Image</string>
+    <string name="stream_position">1</string>
+    <string name="stream_title_example">Title example</string>
+    <string name="stream_user_example">User example</string>
+    <string name="stream_count_views_label">100000</string>
 </resources>

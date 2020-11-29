@@ -5,13 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey" >
-
-
-    
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+        <!-- Information card view -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cvCardInfo"
         android:layout_width="match_parent"
@@ -33,23 +30,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/margin_xxxsmall"
-                android:text=" INFORMATION"
+                android:text="@string/profile_information_label"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:background="@color/grey_dark"
-                android:textSize="12sp" />
-
+                android:textSize="@dimen/profile_card_label_text_size" />
+            <!-- Avatar image view -->
             <ImageView
                 android:id="@+id/ivImage"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="@dimen/profile_image_size"
+                android:layout_height="@dimen/profile_image_size"
                 android:layout_below="@+id/tvInfo"
                 android:layout_alignParentStart="true"
-                android:contentDescription="TODO"
+                android:contentDescription="@string/avatar_image"
                 android:padding="@dimen/margin_xsmall"
                 android:scaleType="fitCenter"
                 android:src="@mipmap/ic_launcher" />
-
+            <!-- Username -->
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
@@ -62,15 +59,15 @@
                 android:layout_toEndOf="@+id/ivImage"
                 android:background="@drawable/ic_rounded_corner_dark_blue"
                 android:textColor="@color/grey"
-                android:textSize="18sp"
+                android:textSize="@dimen/profile_label_text_size"
                 android:textStyle="bold"
-                android:text=" Name"
+                android:text="@string/profile_name"
                 card_view:drawableStartCompat="@drawable/ic_user" />
-
+            <!-- Number of views -->
             <TextView
                 android:id="@+id/tvCount"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:padding="@dimen/margin_xsmall"
                 android:gravity="center_horizontal|center_vertical"
                 android:layout_margin="@dimen/margin_xsmall"
@@ -78,9 +75,9 @@
                 android:layout_toEndOf="@+id/ivImage"
                 android:background="@drawable/ic_rounded_corner_red"
                 android:textColor="@color/grey"
-                android:textSize="18sp"
+                android:textSize="@dimen/profile_label_text_size"
                 android:textStyle="bold"
-                android:text=" 100000"
+                android:text="@string/profile_views"
                 card_view:drawableStartCompat="@drawable/ic_eye" />
 
             <TextView
@@ -90,9 +87,9 @@
                 android:padding="@dimen/margin_xxsmall"
                 android:layout_below="@id/ivImage"
                 android:textColor="@color/grey_dark"
-                android:textSize="20sp"
+                android:textSize="@dimen/stream_text_size"
                 android:textStyle="bold"
-                android:text="example@email.com"
+                android:text="@string/profile_example_email"
                 card_view:drawableStartCompat="@android:drawable/sym_action_email" />
             <TextView
                 android:id="@+id/tvDate"
@@ -102,19 +99,16 @@
                 android:layout_marginBottom="@dimen/margin_xxsmall"
                 android:textColor="@color/grey_dark"
                 android:layout_below="@id/tvEmail"
-                android:textSize="20sp"
+                android:textSize="@dimen/stream_text_size"
                 android:textStyle="bold"
-                android:text="01/01/2021"
+                android:text="@string/profile_example_date"
                 card_view:drawableStartCompat="@android:drawable/ic_menu_my_calendar"/>
-
-
 
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
-
+        <!-- Description card view -->
         <androidx.cardview.widget.CardView
-
             android:id="@+id/cvCardDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -130,60 +124,57 @@
             android:focusable="true">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content" >
                 <TextView
                     android:id="@+id/tvDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/margin_xxxsmall"
-                    android:text=" DESCRIPTION"
+                    android:text="@string/profile_description_label"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:background="@color/grey_dark"
-                    android:textSize="12sp" />
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvDesc"
-            card_view:boxStrokeColor="@color/white" >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tfDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/grey_dark"
-                android:textSize="16sp"
-                android:text="@string/lorem_ipsum"
-                android:background="@color/white"/>
+                    android:textSize="@dimen/profile_card_label_text_size" />
+                <!-- Description text field input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvDesc"
+                    card_view:boxStrokeColor="@color/white" >
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tfDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/grey_dark"
+                        android:textSize="@dimen/profile_description_text_size"
+                        android:text="@string/lorem_ipsum"
+                        android:background="@color/white"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         </RelativeLayout>
-
     </androidx.cardview.widget.CardView>
-
-
-
+        <!-- Update description button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/mbUpdate"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
+            android:insetTop="@dimen/button_inset"
+            android:insetBottom="@dimen/button_inset"
             card_view:cornerRadius="@dimen/margin_xsmall"
             android:layout_marginTop="@dimen/margin_xsmall"
             android:layout_marginStart="@dimen/margin_xsmall"
             android:layout_marginEnd="@dimen/margin_xsmall"
             android:text="@string/button_save_description"
             android:layout_below="@id/cvCardDesc"/>
-
+        <!-- Logout button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/mbLogout"
             style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
+            android:insetTop="@dimen/button_inset"
+            android:insetBottom="@dimen/button_inset"
             android:layout_marginTop="@dimen/margin_xsmall"
             android:layout_marginStart="@dimen/margin_xsmall"
             android:layout_marginEnd="@dimen/margin_xsmall"
@@ -191,19 +182,16 @@
             android:backgroundTint="@color/colorError"
             android:text="@string/button_logout"
             android:layout_below="@id/mbUpdate"/>
-
+        <!-- Progress bar -->
         <ProgressBar
             android:id="@+id/pbLoading"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:translationZ="32dp"
+            android:translationZ="@dimen/translationZ"
             android:layout_centerInParent="true"
             android:indeterminateTint="@color/progress_bar"
             android:visibility="gone" />
-
     </RelativeLayout>
-
-
 
 </androidx.core.widget.NestedScrollView>

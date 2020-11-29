@@ -5,13 +5,14 @@ import kotlinx.serialization.Serializable
 
 /**
  * Created by alex on 07/09/2020.
+ * Done by david on 27/11/2020.
+ * Define User Response data class serializable structure
  */
-
 @Serializable
 data class UserResponse(
         val data: List<User>? = null
 )
-
+/** Defining User data class */
 @Serializable
 data class User(
         @SerialName("profile_image_url") val profileImage: String? = null,
