@@ -117,7 +117,8 @@ class ProfileActivity : AppCompatActivity() {
             // Show Loading Indicator
             binding.pbLoading.visibility = View.VISIBLE
             // Logout current session
-            PEC3App.prefs.access = null //SessionManager().logoutSession()
+            //PEC3App.prefs.access = null //
+             SessionManager().logoutSession()
             // Hide Loading Indicator
             binding.pbLoading.visibility = View.GONE
         }

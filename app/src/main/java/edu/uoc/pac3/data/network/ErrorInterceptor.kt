@@ -1,24 +1,15 @@
 package edu.uoc.pac3.data.network
 
-import android.content.Intent
 import android.util.Log
-import android.widget.Toast
-import edu.uoc.pac3.PEC3App
 import edu.uoc.pac3.data.SessionManager
 import edu.uoc.pac3.data.TwitchApiService
-import edu.uoc.pac3.data.oauth.OAuthConstants
-import edu.uoc.pac3.data.oauth.OAuthTokensResponse
 import edu.uoc.pac3.data.oauth.UnauthorizedException
-import edu.uoc.pac3.oauth.LoginActivity
 import io.ktor.client.features.*
-import io.ktor.client.request.*
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
-import okhttp3.Request
 import okhttp3.Response
+import java.lang.Exception
 import java.net.HttpURLConnection
-import java.net.URLConnection
-
 
 class ErrorInterceptor : Interceptor {
 
@@ -26,39 +17,48 @@ class ErrorInterceptor : Interceptor {
     companion object {
         const val TAG = "TwitchApiService"
     }
-
     override fun intercept(chain: Interceptor.Chain): Response {
 
         // Create Twitch Service
         val twitchService = TwitchApiService(Network.createHttpClient())
-
+        // Get request and response
         val request = chain.request()
         val response = chain.proceed(request)
-        //Log.d(TAG, "Request URL: $request")
         Log.d(TAG, "Response URL: $response")
         return when (response.code) {
+            // Code 200
+            HttpURLConnection.HTTP_OK -> {
+                response
+            }
+            // Code 401
             HttpURLConnection.HTTP_UNAUTHORIZED -> {
                 synchronized(this) {
-                     if (request.method != "POST") {
+                    // If Unauthorized Request on Get Tokens or RefreshTokens
+                     if (request.method == "POST") {
+                         SessionManager().logoutSession()
+                         throw UnauthorizedException
+                     }
+                     // If Unauthorized Request on Get Streams, Get User or Put User Description
+                     else {
                          // Clear accessToken and set false to user login
                          SessionManager().clearAccessToken()
                          // Try to refresh Access Token
                          runBlocking { twitchService.refreshAccessToken() }
                          // Close current response
                          response.close()
+                         // Build new request with refreshed access token
                          val requestRefreshed = request.newBuilder()
-                            .header("Authorization", "BeaXrer ${SessionManager().getAccessToken()}")
+                            .header("Authorization", "Bearer ${SessionManager().getAccessToken()}")
                             .build()
+                         // Proceed new request
                          chain.proceed(requestRefreshed)
-                     } else {
-                         SessionManager().logoutSession()
-                         throw UnauthorizedException
                      }
-
                  }
             }
+            // Any other code other than 401 and 200
             else -> {
-                response
+                SessionManager().logoutSession()
+                throw Exception()
             }
         }
 

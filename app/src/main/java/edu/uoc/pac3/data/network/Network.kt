@@ -1,7 +1,6 @@
 package edu.uoc.pac3.data.network
 
 import android.util.Log
-import androidx.lifecycle.lifecycleScope
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.*
@@ -10,8 +9,6 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.launch
-
 
 /**
  * Created by alex on 07/09/2020.
@@ -47,7 +44,7 @@ object Network {
             // Interceptor
             engine {
                 // Add Error Interceptor to network request
-                addInterceptor(ErrorInterceptor())
+                //addInterceptor(ErrorInterceptor())
             }
             // Apply to All Requests
             defaultRequest {
@@ -57,7 +54,6 @@ object Network {
             }
         }
     }
-
     /** Json kotlin serialization attributes */
     private val json = kotlinx.serialization.json.Json {
         ignoreUnknownKeys = true

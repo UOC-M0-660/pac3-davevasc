@@ -2,7 +2,6 @@ package edu.uoc.pac3.data
 
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
 import edu.uoc.pac3.PEC3App
 import edu.uoc.pac3.data.network.Endpoints
 import edu.uoc.pac3.data.oauth.*
