@@ -32,7 +32,7 @@ class OAuthActivity : AppCompatActivity() {
 
     /** Object with constants for use in this activity */
     companion object {
-        const val TAG = "OAuthActivity"
+        const val TAG = "PEC3_OAuthActivity"
     }
 
     // Declare binding variable for this activity
@@ -48,7 +48,7 @@ class OAuthActivity : AppCompatActivity() {
         launchOAuthAuthorization()
     }
     /** Create URI from OAuthConstants data class constants and values */
-    fun buildOAuthUri(): Uri {
+    private fun buildOAuthUri(): Uri {
         return Uri.parse(authorizationUrl)
                 .buildUpon()
                 .appendQueryParameter("client_id", clientID)
@@ -101,7 +101,6 @@ class OAuthActivity : AppCompatActivity() {
         binding.webView.settings.javaScriptEnabled = true
         binding.webView.loadUrl(uri.toString())
     }
-
     /** Call this method after obtaining the authorization code
      * on the WebView to obtain the tokens */
     private fun onAuthorizationCodeRetrieved(authorizationCode: String) {
@@ -116,20 +115,13 @@ class OAuthActivity : AppCompatActivity() {
             // If exists, save Access Token and Refresh Token using the SessionManager class
             response?.accessToken?.let { accToken -> SessionManager().saveAccessToken(accToken) }
             response?.refreshToken?.let { refToken -> SessionManager().saveRefreshToken(refToken) }
-            // If we are correctly identified, load directly Streams Activity, else, clean webView and load Login Activity again
+            // Open Streams Activity and finish this Activity
             if (SessionManager().isUserAvailable()) {
-                // Launch Streams Activity
-                Log.d(TAG, "onAuthorizationCodeRetrieved -> Login correctly identified!!")
                 Toast.makeText(applicationContext, "Login correctly identified!!", Toast.LENGTH_SHORT).show()
+                Log.d(TAG, "onAuthorizationCodeRetrieved -> Login correctly identified!!")
                 startActivity(Intent(applicationContext, StreamsActivity::class.java))
-            } else {
-                // Return to Login Activity again
-                Log.d(TAG, "onAuthorizationCodeRetrieved -> Error when login, please try again")
-                Toast.makeText(applicationContext, "Error when login, please try again", Toast.LENGTH_SHORT).show()
-                // Remove all Cookies, clear Access Token and open LoginActivity for try again, and finish current Activity
-                SessionManager().logoutSession()
+                finish()
             }
-            finish()
             // Hide Loading Indicator
             binding.pbLoading.visibility = View.GONE
         }

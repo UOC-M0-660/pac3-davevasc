@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import edu.uoc.pac3.PEC3App
 import edu.uoc.pac3.R
 import edu.uoc.pac3.data.SessionManager
 import edu.uoc.pac3.data.TwitchApiService
@@ -117,8 +116,7 @@ class ProfileActivity : AppCompatActivity() {
             // Show Loading Indicator
             binding.pbLoading.visibility = View.VISIBLE
             // Logout current session
-            //PEC3App.prefs.access = null //
-             SessionManager().logoutSession()
+            SessionManager().logoutSession()
             // Hide Loading Indicator
             binding.pbLoading.visibility = View.GONE
         }

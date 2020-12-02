@@ -17,6 +17,7 @@ import io.ktor.http.*
  */
 object Network {
 
+    // Log TAG
     private const val TAG = "Ktor"
 
     /** Creating and setup Ktor Http Client */
@@ -44,7 +45,7 @@ object Network {
             // Interceptor
             engine {
                 // Add Error Interceptor to network request
-                //addInterceptor(ErrorInterceptor())
+                addInterceptor(ErrorInterceptor())
             }
             // Apply to All Requests
             defaultRequest {
