@@ -22,21 +22,6 @@
             android:clipToPadding="false"
             tools:listitem="@layout/stream_item" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    <!-- Label for show 20 more streams -->
-    <TextView
-        android:id="@+id/tvShow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/margin_xsmall"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/show_margin_bottom"
-        android:background="@drawable/ic_rounded_corner_primary"
-        android:text="@string/streams_show_20_more_label"
-        android:textStyle="bold"
-        android:textColor="@color/grey"
-        android:textSize="@dimen/profile_label_text_size"
-        android:visibility="gone"/>
     <!-- Progress bar -->
     <ProgressBar
         android:id="@+id/pbLoading"

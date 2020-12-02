@@ -50,8 +50,6 @@ class StreamsActivity : AppCompatActivity() {
         setSwipeRefreshListener()
         // Set Recyclerview Scroll Listener
         setRecyclerViewScrollListener()
-        // Set Show 20 More Streams Listener
-        setShowMoreStreamsListener()
         // Get Streams from Twitch by API
         loadStreamsFromTwitch()
     }
@@ -116,27 +114,14 @@ class StreamsActivity : AppCompatActivity() {
                     val totalItemCount = layoutM?.itemCount as Int
                     // If we are seeing in the screen the last position of recycler view -> label is showed
                     if (totalItemCount <= lastVisibleItemPosition + 1) {
-                        // Show -show 20 more- label
-                        binding.tvShow.visibility = View.VISIBLE
-                    // Else -> label is not showing
-                    } else  {
-                        // Hide -show 20 more- label
-                        binding.tvShow.visibility = View.GONE
+                        // Load streams from Twitch with current cursor
+                        loadStreamsFromTwitch()
+                        // Inform to user by Toast
+                        Toast.makeText(applicationContext, "More streams were loaded", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         })
-    }
-    /** Set show more streams label listener */
-    private fun setShowMoreStreamsListener() {
-        binding.tvShow.setOnClickListener {
-            // Load streams from Twitch with current cursor
-            loadStreamsFromTwitch()
-            // Hide -show 20 more- label
-            binding.tvShow.visibility = View.GONE
-            // Inform to user by Toast
-            Toast.makeText(applicationContext, "More streams were loaded", Toast.LENGTH_SHORT).show()
-        }
     }
     /** Load streams with pagination from Twitch by API */
     private fun loadStreamsFromTwitch() {
