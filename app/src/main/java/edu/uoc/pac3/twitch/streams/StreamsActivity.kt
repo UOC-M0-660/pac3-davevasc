@@ -25,7 +25,7 @@ class StreamsActivity : AppCompatActivity() {
 
     /** Object with constants for use in this activity */
     companion object {
-        private const val TAG = "StreamsActivity"
+        private const val TAG = "PEC3_StreamsActivity"
     }
     // Declare binding, twitch service, and more variables for this activity
     private lateinit var binding: ActivityStreamsBinding
@@ -110,7 +110,7 @@ class StreamsActivity : AppCompatActivity() {
         binding.rvStreams.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                recyclerView.layoutManager.let {layoutM ->
+                recyclerView.layoutManager.let { layoutM ->
                     val totalItemCount = layoutM?.itemCount as Int
                     // If we are seeing in the screen the last position of recycler view -> label is showed
                     if (totalItemCount <= lastVisibleItemPosition + 1) {
