@@ -36,10 +36,8 @@ class TwitchApiService(private val httpClient: HttpClient) {
                 parameter("redirect_uri", redirectUri)
             }
         } catch (t: Throwable) {
-            // When error -> logout session
             Log.d(TAG, "getTokens -> Error: ${t.message}")
-            // Remove all Cookies, clear Access Token and open LoginActivity for try login again
-            SessionManager().logoutSession()
+            // Return null to manage session logout from Activity
             null
         }
     }
@@ -56,8 +54,7 @@ class TwitchApiService(private val httpClient: HttpClient) {
         } catch (t: Throwable) {
             // First time (error != 401) or second time (error = 401), so, in both cases -> logout
             Log.d(TAG, "getStreams -> Error: ${t.message}")
-            // Remove all Cookies, clear Access Token and open LoginActivity for try login again
-            SessionManager().logoutSession()
+            // Return null to manage session logout from Activity
             null
         }
     }
@@ -72,9 +69,8 @@ class TwitchApiService(private val httpClient: HttpClient) {
             }
         } catch (t: Throwable) {
             // First time (error != 401) or second time (error = 401), so, in both cases -> logout
-            Log.d(TAG, "getStreams -> Error: ${t.message}")
-            // Remove all Cookies, clear Access Token and open LoginActivity for try login again
-            SessionManager().logoutSession()
+            Log.d(TAG, "getUser -> Error: ${t.message}")
+            // Return null to manage session logout from Activity
             null
         }
     }
@@ -90,9 +86,8 @@ class TwitchApiService(private val httpClient: HttpClient) {
             }
         } catch (t: Throwable) {
             // First time (error != 401) or second time (error = 401), so, in both cases -> logout
-            Log.d(TAG, "getStreams -> Error: ${t.message}")
-            // Remove all Cookies, clear Access Token and open LoginActivity for try login again
-            SessionManager().logoutSession()
+            Log.d(TAG, "updateUserDescription -> Error: ${t.message}")
+            // Return null to manage session logout from Activity
             null
         }
     }
@@ -115,9 +110,9 @@ class TwitchApiService(private val httpClient: HttpClient) {
                 Log.d(TAG, "refreshAccessToken -> accessToken and refreshToken successful renewed")
             }
         } catch (t: Throwable) {
-            // When error -> logout session from getStreams, getUser or updateUser, not form here
+            // When error -> manage in Catch from getStreams, getUser or updateUser, not form here
             Log.d(TAG, "refreshAccessToken -> Error: ${t.message}")
-            // Here not needs logout session because logout is launched by catch of GET/PUT functions
+            // Here not needs do nothing more, because will be null returned by getStreams, getUser or updateUser functions
         }
     }
 }

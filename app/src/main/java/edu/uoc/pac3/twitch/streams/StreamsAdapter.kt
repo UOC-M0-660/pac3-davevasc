@@ -17,7 +17,7 @@ class StreamsAdapter (private var streams: MutableList<Stream>) :
 
     /** Object with constants for use in this adapter */
     companion object {
-        private const val TAG = "StreamsAdapter"
+        private const val TAG = "PEC3_StreamsAdapter"
     }
     // Declare binding variable for Streams Activity
     private lateinit var binding: StreamItemBinding

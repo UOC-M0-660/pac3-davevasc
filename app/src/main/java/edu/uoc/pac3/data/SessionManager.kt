@@ -1,10 +1,6 @@
 package edu.uoc.pac3.data
 
-import android.content.Intent
-import android.webkit.CookieManager
-import android.widget.Toast
 import edu.uoc.pac3.PEC3App
-import edu.uoc.pac3.oauth.LoginActivity
 
 /**
  * Created by alex on 06/09/2020.
@@ -44,13 +40,7 @@ class SessionManager {
     }
     /** Logout current session function */
     fun logoutSession() {
-        // Remove all cookies
-        CookieManager.getInstance().removeAllCookies(null)
-        // Delete Access Token and set user available to false
-        this.clearAccessToken()
-        // Open Login Activity
-        PEC3App.context.startActivity(Intent(PEC3App.context, LoginActivity::class.java))
-        // Show info message to user: Successfully logged out
-        Toast.makeText(PEC3App.context, "Successfully logged out", Toast.LENGTH_SHORT).show()
+        // Call to logoutSession from Application Activity
+        (PEC3App.context as? PEC3App)?.logoutSession()
     }
 }

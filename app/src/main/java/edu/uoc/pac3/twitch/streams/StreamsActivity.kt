@@ -74,6 +74,8 @@ class StreamsActivity : AppCompatActivity() {
                 SessionManager().logoutSession()
                 // Hide Loading Indicator
                 binding.pbLoading.visibility = View.GONE
+                // Finish this Activity
+                finish()
                 return true
             }
         }
@@ -131,12 +133,20 @@ class StreamsActivity : AppCompatActivity() {
             binding.pbLoading.visibility = View.VISIBLE
             // Get Tokens from Twitch with cursor pagination
             val response = twitchService.getStreams(cursor)
-            // Shave cursor and show streams in the recyclerview
-            response?.pagination?.cursor?.let { cursor = it }
-            response?.data?.let { adapter.setStreams(it.toMutableList()) }
-            // Hide Loading Indicator
-            binding.pbLoading.visibility = View.GONE
-            Log.d(TAG, "loadStreamsFromTwitch -> Streams loaded correctly")
+            // IF: No response -> logout session
+            if (response == null) {
+                // Remove all Cookies, clear Access Token and open LoginActivity for try login again
+                SessionManager().logoutSession()
+                // Finish this Activity
+                finish()
+                // ELSE: Save cursor and show streams in the recyclerview
+            } else {
+                response.pagination?.cursor?.let { cursor = it }
+                response.data?.let { adapter.setStreams(it.toMutableList()) }
+                // Hide Loading Indicator
+                binding.pbLoading.visibility = View.GONE
+                Log.d(TAG, "loadStreamsFromTwitch -> Streams loaded correctly")
+            }
         }
     }
 }

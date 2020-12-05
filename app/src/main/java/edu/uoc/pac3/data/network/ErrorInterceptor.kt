@@ -23,24 +23,20 @@ class ErrorInterceptor : Interceptor {
         // Get request and response
         val request = chain.request()
         val response = chain.proceed(request)
-        Log.d(TAG, "Response URL: $response")
         // Return different request responses depending on response code
         return when (response.code) {
             // Code 401
             HttpURLConnection.HTTP_UNAUTHORIZED -> {
-                // Performing all 401 in sync blocks, to avoid multiply token updates
-                synchronized(this) {
-                    // If Unauthorized Request on Get Tokens or RefreshTokens -> logout
-                    if (request.method == "POST") {
-                        //Catch of TwitchService will manage logoutSession
-                        response
-                    }
-                    // If Unauthorized Request on Get Streams, Get User or Put User Description -> refresh and retry
-                    else {
+                // Get current request url (Endpoint)
+                val requestURL = request.url.toString()
+                // IF: If Unauthorized Request on getStreams, getUser or updateUserDescription -> refresh and retry
+                if (requestURL == Endpoints.getTwitchStreamsUrl() || requestURL == Endpoints.getTwitchUserUrl()) {
+                    // IF: If exists refresh token
+                    if (SessionManager().getRefreshToken() != null) {
                         // Clear accessToken and set false to user login
                         SessionManager().clearAccessToken()
                         // Try to refresh Access Token
-                        Log.d(TAG, "Interceptor -> Trying refresh tokens...")
+                        Log.d(TAG, "Try to refresh Access Token...")
                         runBlocking { twitchService.refreshAccessToken() }
                         // Close current response for build new one
                         response.close()
@@ -50,10 +46,18 @@ class ErrorInterceptor : Interceptor {
                                 .build()
                         // Proceed new request
                         chain.proceed(requestRefreshed)
+                    // ELSE: If not exists refresh token
+                    } else {
+                        // Return response for manage actions in the service and activity
+                        response
                     }
+                // ELSE: If Unauthorized Request on getTokens or refreshTokens -> logout
+                } else {
+                    // Return response for manage actions in the service and activity
+                    response
                 }
             }
-            // Any other code different of 401, Catch of TwitchService will manage logoutSession
+            // Any other code different of 401, Return response for manage actions in the service and activity
             else -> {
                 response
             }

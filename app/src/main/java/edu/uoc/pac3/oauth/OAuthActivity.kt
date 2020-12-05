@@ -34,7 +34,6 @@ class OAuthActivity : AppCompatActivity() {
     companion object {
         const val TAG = "PEC3_OAuthActivity"
     }
-
     // Declare binding variable for this activity
     private lateinit var binding: ActivityOauthBinding
 
@@ -84,6 +83,7 @@ class OAuthActivity : AppCompatActivity() {
                                 Toast.makeText(applicationContext, "Couldn't log in with Twitch please try again later", Toast.LENGTH_SHORT).show()
                                 // Remove all Cookies, clear Access Token and open LoginActivity for try again, and finish current Activity
                                 SessionManager().logoutSession()
+                                // Finish this Activity
                                 finish()
                             }
                         }
@@ -112,18 +112,23 @@ class OAuthActivity : AppCompatActivity() {
             binding.pbLoading.visibility = View.VISIBLE
             // Get Tokens from Twitch
             val response = twitchService.getTokens(authorizationCode)
-            // If exists, save Access Token and Refresh Token using the SessionManager class
-            response?.accessToken?.let { accToken -> SessionManager().saveAccessToken(accToken) }
-            response?.refreshToken?.let { refToken -> SessionManager().saveRefreshToken(refToken) }
-            // Open Streams Activity and finish this Activity
-            if (SessionManager().isUserAvailable()) {
+            // IF: No response -> logout session
+            if (response == null) {
+                // Remove all Cookies, clear Access Token and open LoginActivity for try login again
+                SessionManager().logoutSession()
+            // ELSE: Save Tokens and Open Streams Activity
+            } else {
+                // If exists, save Access Token and Refresh Token using the SessionManager class
+                response.accessToken.let { accToken -> SessionManager().saveAccessToken(accToken) }
+                response.refreshToken?.let { refToken -> SessionManager().saveRefreshToken(refToken) }
                 Toast.makeText(applicationContext, "Login correctly identified!!", Toast.LENGTH_SHORT).show()
                 Log.d(TAG, "onAuthorizationCodeRetrieved -> Login correctly identified!!")
                 startActivity(Intent(applicationContext, StreamsActivity::class.java))
-                finish()
             }
             // Hide Loading Indicator
             binding.pbLoading.visibility = View.GONE
+            // Finish this Activity
+            finish()
         }
     }
 }

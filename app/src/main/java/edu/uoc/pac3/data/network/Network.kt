@@ -18,7 +18,7 @@ import io.ktor.http.*
 object Network {
 
     // Log TAG
-    private const val TAG = "Ktor"
+    private const val TAG = "PEC3_Ktor"
 
     /** Creating and setup Ktor Http Client */
     fun createHttpClient(): HttpClient {

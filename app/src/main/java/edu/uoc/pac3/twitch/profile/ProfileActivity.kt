@@ -58,16 +58,24 @@ class ProfileActivity : AppCompatActivity() {
             binding.pbLoading.visibility = View.VISIBLE
             // Get Tokens from Twitch
             val response = twitchService.getUser()
-            // Get User from response if exist, and load values into view
-            response?.data?.get(0)?.let { user ->
-                val name = " " + user.userName + " "
-                val views = " " + user.viewCount + " "
-                user.profileImage?.let { url -> setImage(url)}
-                binding.tvName.text = name
-                binding.tvCount.text = views
-                binding.tvEmail.text = user.userEmail
-                user.createdDate?.let { date -> setDate(date) }
-                binding.tfDescription.setText(user.description)
+            // IF: No response -> logout session
+            if (response == null) {
+                // Remove all Cookies, clear Access Token and open LoginActivity for try login again
+                SessionManager().logoutSession()
+                // Finish this Activity
+                finish()
+            // ELSE: Get User from response if exist, and load values into view
+            } else {
+                response.data?.get(0)?.let { user ->
+                    val name = " " + user.userName + " "
+                    val views = " " + user.viewCount + " "
+                    user.profileImage?.let { url -> setImage(url) }
+                    binding.tvName.text = name
+                    binding.tvCount.text = views
+                    binding.tvEmail.text = user.userEmail
+                    user.createdDate?.let { date -> setDate(date) }
+                    binding.tfDescription.setText(user.description)
+                }
             }
             // Hide Loading Indicator
             binding.pbLoading.visibility = View.GONE
@@ -102,9 +110,18 @@ class ProfileActivity : AppCompatActivity() {
                 // Show Loading Indicator
                 binding.pbLoading.visibility = View.VISIBLE
                 // Send view description to Twitch by API
-                twitchService.updateUserDescription(binding.tfDescription.text.toString())
-                Log.d(TAG, "setUpdateButton -> Description uploaded correctly")
-                Toast.makeText(applicationContext, "Description uploaded correctly", Toast.LENGTH_SHORT).show()
+                val response = twitchService.updateUserDescription(binding.tfDescription.text.toString())
+                // IF: No response -> logout session
+                if (response == null) {
+                    // Remove all Cookies, clear Access Token and open LoginActivity for try login again
+                    SessionManager().logoutSession()
+                    // Finish this Activity
+                    finish()
+                    // ELSE: Description uploaded correctly
+                } else {
+                    Log.d(TAG, "setUpdateButton -> Description uploaded correctly")
+                    Toast.makeText(applicationContext, "Description uploaded correctly", Toast.LENGTH_SHORT).show()
+                }
                 // Hide Loading Indicator
                 binding.pbLoading.visibility = View.GONE
             }
@@ -115,10 +132,12 @@ class ProfileActivity : AppCompatActivity() {
         binding.mbLogout.setOnClickListener {
             // Show Loading Indicator
             binding.pbLoading.visibility = View.VISIBLE
-            // Logout current session
+            // Remove all Cookies, clear Access Token and open LoginActivity for try login again
             SessionManager().logoutSession()
             // Hide Loading Indicator
             binding.pbLoading.visibility = View.GONE
+            // Finish this Activity
+            finish()
         }
     }
 }
